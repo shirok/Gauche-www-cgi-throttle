@@ -1,0 +1,79 @@
+NAME
+   www.cgi.throttle - handle excessive access originated from the same IP
+
+EXAMPLE
+   (use www.cgi)
+   (use www.cgi.throttle)
+
+   (define (main args)
+     (cgi-throttle
+      "memcache:localhost:11211"
+      '((GET :window 60 :count 15))
+      (cut cgi-main (^[params] ...main cgi action...))))
+
+DESCRIPTION
+   Cgi-throttle is a simple tool to counter unwelcomed access to
+   a cgi script.  
+
+   Currently this depends on Gauche-memcache package, available from
+   http://fixedpoint.jp/gauche-memcache/.   The script assumes
+   memcached is running.
+
+   [Procedure] cgi-throttle connection-spec config thunk
+
+      THUNK is the main body of the cgi script.  This procedure wraps
+      it to check the requester's IP address, and if the number of
+      requests from the same IP address and the same request methods
+      within the certain time window exceeds the specified count,
+      it takes a specified action (by default it responds with "503
+      service unavailable"); otherwise, THUNK is executed to perform
+      the original cgi operation.
+
+      CONNECTION-SPEC is a string "memcache:HOST:PORT", where HOST
+      and PORT specifies the memcached's hostname and port number.
+      We may support backends other than memcached in future.
+
+      CONFIG is a list of (<request-method> . <kv-list>) where
+      <request-method> is http method like GET or POST, and <kv-list>
+      is a keyword-value list.  The following keywords are recognized.
+
+       :window <seconds>   Specifies the time window to keep the
+                           history of access from each IP address.
+                           Default is 30.
+
+       :count <count>      If access from a specific IP address with
+                           the request method exceeds this count in
+                           the time window, an action is taken.
+
+       :action <procedure>  The procedure is called with three arguments:
+                           Requester's IP address, request method (a symbol,
+                           all uppercase letters, e.g. GET), and a list
+                           of timestamps (seconds from unix epoch) of recent
+                           access.  For future extensions, the procedure
+                           should accept rest arguments.
+                           The procedure should return a cgi output in
+                           text tree format (ref: text.tree), or #f if
+                           it decides to allow access.
+
+   [Procedure] cgi-throttle-return-503 ip method timestamps . rest
+       
+      The default action.  Responds with status 503 "service unavailable".
+
+   [Procedure] cgi-throttle-redirect absolute-url
+
+      Returns a procedure that can be used an action, which redirects
+      the client to the given url.
+
+   [Parameter] cgi-throttle-log-drain
+
+      Set <log-drain> to this parameter and log messages goes to that drain.
+      The default is #f, which disables logging.
+
+
+FUTURE EXTENSION IDEAS
+
+   It might be useful if config can be specialized based on the query
+   parameters and/or PATH_INFO.
+
+   Grouping of IP addresses (netmasking and/or enumerate list of IPs)
+   may be useful.
