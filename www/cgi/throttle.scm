@@ -120,7 +120,8 @@
       [_ (mc:set conn key `(,(sys-time)) :exptime window) #f])))
 
 (define (report-memcache-error e)
-  (log-format (cgi-throttle-log-drain) "~a: ~s"
+  (log-format (cgi-throttle-log-drain) "[~a] ~a ~s"
+              (cgi-get-metavariable "REMOTE_ADDR")
               (class-name (class-of e))
               (~ e'message))
   (write-tree
