@@ -9,8 +9,3 @@
 (test-module 'www.cgi.throttle)
 
 (test-end)
-
-
-
-
-

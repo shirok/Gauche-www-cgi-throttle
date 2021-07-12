@@ -3,7 +3,7 @@
 ;;
 
 (define-gauche-package "Gauche-www-cgi-throttle"
-  ;; 
+  ;;
   :version "0.2.1"
 
   ;; Description of the package.  The first line is used as a short

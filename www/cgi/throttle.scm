@@ -134,8 +134,3 @@
   (rxmatch-case conn-spec
     [#/^memcache:([^:]+):(\d+)$/ (_ host port) (values host (x->integer port))]
     [else (error "invalid connection spec" conn-spec)]))
-
-            
-
-                  
-

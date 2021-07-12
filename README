@@ -13,7 +13,7 @@ EXAMPLE
 
 DESCRIPTION
    Cgi-throttle is a simple tool to counter unwelcomed access to
-   a cgi script.  
+   a cgi script.
 
    Currently this depends on Gauche-memcache package, available from
    http://fixedpoint.jp/gauche-memcache/.   The script assumes
@@ -56,7 +56,7 @@ DESCRIPTION
                            it decides to allow access.
 
    [Procedure] cgi-throttle-return-503 ip method timestamps . rest
-       
+
       The default action.  Responds with status 503 "service unavailable".
 
    [Procedure] cgi-throttle-redirect absolute-url
