@@ -102,7 +102,7 @@
              [name   (cgi-get-metavariable "SCRIPT_NAME")]
              [method ($ string->symbol $ string-upcase
                         $ cgi-get-metavariable "REQUEST_METHOD")]
-             [key    #`"Gauche-www-cgi-throttle:,|name|:,|ip|:,|method|"]
+             [key    #"Gauche-www-cgi-throttle:~|name|:~|ip|:~|method|"]
              [conf   (assq-ref config method #f)]
              [window (get-keyword :window conf *default-window*)])
     (match (mc:get conn key)
