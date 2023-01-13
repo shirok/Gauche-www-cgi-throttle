@@ -20,7 +20,7 @@
 
 (define (main args)
   (cgi-throttle
-   #`"memcache:localhost:,*port*"
+   #"memcache:localhost:~*port*"
    `((GET :window 30 :count 3 :action ,action))
    (cut cgi-main (^[params] `(,(cgi-header)
                               ,(html-doctype)
