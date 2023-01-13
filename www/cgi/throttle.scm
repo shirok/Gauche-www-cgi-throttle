@@ -3,16 +3,13 @@
 ;;;
 
 (define-module www.cgi.throttle
-  (use gauche.parameter)
   (use gauche.logger)
-  (use gauche.experimental.app) ; unnecessary after Gauche-0.9.3
+  (use scheme.list)
+  (use srfi.13)
   (use text.html-lite)
   (use text.tree)
-  (use www.cgi)
-  (use util.list)
   (use util.match)
-  (use srfi-1)
-  (use srfi-13)
+  (use www.cgi)
   ;; Requres Gauche-memcache (http://fixedpoint.jp/gauche-memcache/)
   (use memcache :prefix mc:)
   (export cgi-throttle
