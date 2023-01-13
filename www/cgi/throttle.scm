@@ -72,7 +72,7 @@
     (receive (host port) (parse-connection-spec conn-spec)
       (let1 conn (mc:memcache-connect host port)
         (unwind-protect
-            (or (check config conn) (thunk))
+            (if (check config conn) 0 (thunk))
           (mc:memcache-close conn))))))
 
 ;; API
