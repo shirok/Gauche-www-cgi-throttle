@@ -13,6 +13,9 @@
   ;; Requres Gauche-memcache (http://fixedpoint.jp/gauche-memcache/)
   (use memcache :prefix mc:)
   (export cgi-throttle
+          cgi-main/throttle
+          cgi-throttle-connection
+          cgi-throttle-config
           cgi-throttle-log-drain
           cgi-throttle-return-503
           cgi-throttle-redirect)
@@ -31,6 +34,13 @@
 ;; in last 30 seconds, we limit.
 (define-constant *default-window* 30)   ;seconds
 (define-constant *default-count* 15)
+
+;; These parameters are used with cgi-main/throttle
+(define cgi-throttle-config
+  (make-parameter '((GET :window ,*default-window*
+                         :count ,*default-count*))))
+(define cgi-throttle-connection
+  (make-parameter "memcache:localhost:11211"))
 
 ;; Usage: wrap cgi-main procedure with cgi-throttle procedure
 ;;
@@ -74,6 +84,13 @@
         (unwind-protect
             (if (check config conn) 0 (thunk))
           (mc:memcache-close conn))))))
+
+;; Convenience API - Can be used as drop-in replacement for cgi-main.
+;; Configuration is taken from cgi-throttle-config parameter.
+(define (cgi-main/throttle proc)
+  (cgi-throttle (cgi-throttle-connection)
+                (cgi-throttle-config)
+                (cut cgi-main proc)))
 
 ;; API
 (define cgi-throttle-log-drain (make-parameter #f))

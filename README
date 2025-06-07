@@ -5,11 +5,12 @@ EXAMPLE
    (use www.cgi)
    (use www.cgi.throttle)
 
+   (cgi-throttle-connection "memcache:localhost:11211")
+   (cgi-throttle-config '((GET :window 30 :count 15)))
+
    (define (main args)
-     (cgi-throttle
-      "memcache:localhost:11211"
-      '((GET :window 60 :count 15))
-      (cut cgi-main (^[params] ...main cgi action...))))
+     (cgi-main/throttle
+      (^[params] ...main cgi action...)))
 
 DESCRIPTION
    Cgi-throttle is a simple tool to counter unwelcomed access to
@@ -18,6 +19,13 @@ DESCRIPTION
    Currently this depends on Gauche-memcache package, available from
    http://fixedpoint.jp/gauche-memcache/.   The script assumes
    memcached is running.
+
+   [Procedure] cgi-main/throttle proc
+
+      This is a convenience API as a drop-in replacement of cgi-main
+      in www.cgi.  It calls cgi-throttle with the values of
+      parameters cgi-throttle-connection and cgi-throttle-config.
+      PROC takes one argument, params, in the same way as cgi-main.
 
    [Procedure] cgi-throttle connection-spec config thunk
 
@@ -54,6 +62,14 @@ DESCRIPTION
                            The procedure should return a cgi output in
                            text tree format (ref: text.tree), or #f if
                            it decides to allow access.
+
+   [Parameter] cgi-throttle-connection
+   [Parameter] cgi-throttle-config
+
+      These parametres are used by cgi-main/throttle to be passed to
+      cgi-throttle.  The default values ad the default connectino to
+      memcached and ((GET :window 30 :count 15)), which is reasonable
+      to be used out-of-box.
 
    [Procedure] cgi-throttle-return-503 ip method timestamps . rest
 
