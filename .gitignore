@@ -1,0 +1,5 @@
+Makefile
+VERSION
+Gauche-www-cgi-throttle.gpd
+config.log
+test.log
