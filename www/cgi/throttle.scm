@@ -93,7 +93,10 @@
                 (cut cgi-main proc)))
 
 ;; API
-(define cgi-throttle-log-drain (make-parameter #f))
+;; The default drain emits message to stderr without prefix.  In the typical
+;; cgi usage, that will be captured and logged to the http server's log.
+(define cgi-throttle-log-drain
+  (make-parameter (make <log-drain> :path #t :prefix "")))
 
 ;; API
 (define cgi-throttle-return-503
